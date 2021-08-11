@@ -42,7 +42,12 @@ contract CarTitle {
         for(uint i = 0; i < titles[msg.sender].length; i++) {
             if(titles[msg.sender][i].vin == _vin) { // If the VIN matches the one passed in this function
                 titles[_to].push(titles[msg.sender][i]); // Send the title to the new account
-                delete titles[msg.sender][i];
+                
+                uint last = titles[msg.sender].length - 1;
+                
+                titles[msg.sender][i] = titles[msg.sender][last]; // Swap the values
+                delete titles[msg.sender][last]; // Delete last value
+                titles[msg.sender].pop();
             }
         }
     }
