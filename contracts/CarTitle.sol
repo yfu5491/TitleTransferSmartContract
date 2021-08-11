@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-contract CarTitle {
+import "./NFTImplementations.sol";
+
+contract CarTitle is NFTImplementations{
     
     address owner;
     
@@ -24,6 +26,7 @@ contract CarTitle {
     mapping (address => Title[]) titles;
     
     mapping (address => uint256) balance; // For balanceOf()
+    mapping (uint256 => address) approved;
 
     // Only owner modifier in this context means the DMV or other governing body
     modifier onlyOwner {
@@ -31,8 +34,14 @@ contract CarTitle {
         _;
     }
     
-    function approve(address _approve, uint128 vin) {
-        
+    function getApproved(uint256 _vin) public view returns(address) {
+        return approved[_vin];
+    }
+    
+    function approve(address _approve, uint256 _vin) external {
+        // This function is just here for ERC-721 standards.
+        // In the context of a legal title, you only want the owner to have access to it.
+        // emit Approval(msg.sender, msg.sender, _vin);
     }
     
     function transferFrom(address _from, address _to, uint256 _vin) public {
@@ -54,6 +63,8 @@ contract CarTitle {
                 titles[msg.sender].pop();
             }
         }
+        
+        emit Transfer(_from, _to, _vin);
     }
     
     function ownerOf(uint256 _vin) public view returns(address) {
