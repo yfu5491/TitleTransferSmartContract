@@ -10,7 +10,7 @@ contract CarTitle {
     }
     
     struct Title {
-        uint32 vin;
+        uint256 vin;
         string make;
         string model;
         string first_name;
@@ -20,7 +20,7 @@ contract CarTitle {
         string city;
     }
     
-    mapping (uint32 => address) vinToOwner; // Owner of vin
+    mapping (uint256 => address) vinToOwner; // Owner of vin
     mapping (address => Title[]) titles;
     
     mapping (address => uint256) balance; // For balanceOf()
@@ -31,7 +31,11 @@ contract CarTitle {
         _;
     }
     
-    function transferFrom(address _from, address _to, uint32 _vin) public {
+    function approve(address _approve, uint128 vin) {
+        
+    }
+    
+    function transferFrom(address _from, address _to, uint256 _vin) public {
         require(vinToOwner[_vin] == msg.sender);
         
         vinToOwner[_vin] = _to;
@@ -52,7 +56,7 @@ contract CarTitle {
         }
     }
     
-    function ownerOf(uint32 _vin) public view returns(address) {
+    function ownerOf(uint256 _vin) public view returns(address) {
         return vinToOwner[_vin];
     }
     
@@ -64,7 +68,7 @@ contract CarTitle {
         return titles[msg.sender];
     }
     
-    function newTitle(address _owner, uint32 _vin, string memory _make, string memory _model, string memory _first_name, string memory _last_name, string memory _country, string memory _state, string memory _city) public onlyOwner {
+    function newTitle(address _owner, uint256 _vin, string memory _make, string memory _model, string memory _first_name, string memory _last_name, string memory _country, string memory _state, string memory _city) public onlyOwner {
         require(vinToOwner[_vin] ==  0x0000000000000000000000000000000000000000);
         
         titles[_owner].push(Title(_vin, _make, _model, _first_name, _last_name, _country, _state, _city));
