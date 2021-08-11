@@ -20,8 +20,10 @@ contract CarTitle {
         string city;
     }
     
-    mapping (uint32 => address) vin;
-    mapping (address => Title) titles;
+    mapping (uint32 => address) vinToOwner; // Owner of vin
+    mapping (address => Title[]) titles;
+    
+    mapping (address => uint256) balance; // For balanceOf()
 
     // Only owner modifier in this context means the DMV or other governing body
     modifier onlyOwner {
@@ -29,19 +31,39 @@ contract CarTitle {
         _;
     }
     
-    
-    function ownerOf(uint32 _vin) public view returns(address) {
-        return vin[_vin];
+    function transferFrom(address _from, address _to, uint32 _vin) public {
+        require(vinToOwner[_vin] == msg.sender);
+        
+        vinToOwner[_vin] = _to;
+        
+        balance[msg.sender]--;
+        balance[_to]++;
+        
+        for(uint i = 0; i < titles[msg.sender].length; i++) {
+            if(titles[msg.sender][i].vin == _vin) { // If the VIN matches the one passed in this function
+                titles[_to].push(titles[msg.sender][i]); // Send the title to the new account
+                delete titles[msg.sender][i];
+            }
+        }
     }
     
-    function getMyTitle() public view returns(Title memory) {
+    function ownerOf(uint32 _vin) public view returns(address) {
+        return vinToOwner[_vin];
+    }
+    
+    function balanceOf(address _owner) public view returns (uint256) {
+        return balance[_owner];
+    }
+    
+    function getMyTitles() public view returns(Title[] memory) {
         return titles[msg.sender];
     }
     
-    function newTitle(uint32 _vin, string memory _make, string memory _model, string memory _first_name, string memory _last_name, string memory _country, string memory _state, string memory _city) public onlyOwner {
-        require(vin[_vin] ==  0x0000000000000000000000000000000000000000);
+    function newTitle(address _owner, uint32 _vin, string memory _make, string memory _model, string memory _first_name, string memory _last_name, string memory _country, string memory _state, string memory _city) public onlyOwner {
+        require(vinToOwner[_vin] ==  0x0000000000000000000000000000000000000000);
         
-        titles[msg.sender] = Title(_vin, _make, _model, _first_name, _last_name, _country, _state, _city);
-        vin[_vin] = msg.sender;
+        titles[_owner].push(Title(_vin, _make, _model, _first_name, _last_name, _country, _state, _city));
+        vinToOwner[_vin] = _owner;
+        balance[_owner]++;
     }
 }
