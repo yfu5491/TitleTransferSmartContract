@@ -1,4 +1,5 @@
-pragma solidity >=0.4.22 <0.9.0;
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.6;
 
 import "./Data.sol";
 
@@ -13,7 +14,7 @@ contract NFTImplementations is Data{
         // emit Approval(msg.sender, msg.sender, _vin);
     }
     
-    function transferFrom(address _from, address _to, uint256 _vin) public {
+    function transferFrom(address _to, uint256 _vin) public {
         require(vinToOwner[_vin] == msg.sender);
         
         vinToOwner[_vin] = _to;
@@ -33,7 +34,6 @@ contract NFTImplementations is Data{
             }
         }
         
-        //emit Transfer(_from, _to, _vin);
     }
     
     function ownerOf(uint256 _vin) public view returns(address) {

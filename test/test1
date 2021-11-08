@@ -1,0 +1,17 @@
+pragma solidity 0.8.6;
+
+import "truffle/Assert.sol";
+import "truffle/DeployedAddresses.sol";
+import "../contracts/NFTImplementations.sol";
+
+contract TestAdoption {
+ // The address of the adoption contract to be tested
+ NFTImplementations adoption = NFTImplementations(DeployedAddresses.Adoption());
+
+ // The ownerOf of Vehical  will be used for testing
+ uint expectedowner = Ron ;
+
+ // The expected owner of adopted Vehical is this contract
+ address expectedAdopter = address(this);
+
+}

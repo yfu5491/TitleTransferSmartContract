@@ -1,4 +1,5 @@
-pragma solidity >=0.4.22 <0.9.0;
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.6;
 
 contract Data {
     struct Title {
@@ -16,5 +17,5 @@ contract Data {
     mapping (address => Title[]) titles;
     
     mapping (address => uint256) balance; // For balanceOf()
-    mapping (uint256 => address) approved;
+    mapping (string => address) approved;
 }
